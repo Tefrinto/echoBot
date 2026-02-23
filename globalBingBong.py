@@ -6,6 +6,7 @@ import os
 import random
 import asyncio
 import sys
+from datetime import datetime
 
 # Load environment variables
 load_dotenv()
@@ -30,6 +31,8 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Scheduled task for bingbong playing every hour
 async def globalBingBong():
+    HorasMudae = [2, 5, 8, 11, 14, 17, 20, 23]
+    HoraAhora = datetime.now().hour
     for guild in bot.guilds:
         for vc in guild.voice_channels:
             if len(vc.members) > 0:
@@ -38,9 +41,13 @@ async def globalBingBong():
                 music_files = sorted(
                     [f for f in os.listdir(music_folder) if f.endswith(".mp3")]
                 )
-                selected_song = random.choices(music_files, weights=[99.99, 0.01], k=1)[
+
+                if(HoraAhora in HorasMudae):
+                    selected_song = "chibi.mp3"
+                else:
+                    selected_song = random.choices(music_files, weights=[0.00, 99.99, 0.01], k=1)[
                     0
-                ]
+                    ]
 
                 while not voice_client.is_connected():
                     await asyncio.sleep(0.1)
